@@ -12,3 +12,8 @@ description/rotational-speed.skos.ttl,https://data.hetarchief.be/id/rotational-s
 description/licenses.skos.ttl,https://data.hetarchief.be/id/license
 description/production-method.skos.ttl,https://data.hetarchief.be/id/production-method
 education/thema.skos.ttl,https://data.hetarchief.be/id/onderwijs/thema
+rights/thema.skos.ttl,https://data.hetarchief.be/id/onderwijs/thema
+rights/motivation.skos.ttl,https://data.hetarchief.be/id/motivation
+rights/permission.skos.ttl,https://data.hetarchief.be/id/permission
+rights/reuse-licenses.skos.ttl,https://data.hetarchief.be/id/reuse-license
+rights/rightsstatement.skos.ttl,https://data.hetarchief.be/id/rights-statement

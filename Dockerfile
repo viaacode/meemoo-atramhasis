@@ -3,17 +3,30 @@ ARG branch=main
 # The latest alpine images don't have some tools like (`git` and `bash`).
 # Adding bash and openssh to the image
 RUN apk update && apk upgrade && \
-    apk add --no-cache bash openssh nodejs npm
+    apk add --no-cache bash openssh git nodejs npm
 
 COPY . /app/atramhasis
 
 WORKDIR /app/atramhasis
 
-RUN pip install atramhasis==2.1.1
+# RUN pip install atramhasis==2.1.1
+# Install atramhasis from the git repository, as the latest release doesn't include the scss files, which are needed to generate the css.
+RUN npm install -g pnpm@latest-11
+RUN pip install --upgrade pip pip-tools
+RUN pip install atramhasis==4.0.0
 
 # Generate custom
 RUN npm install -g sass
-RUN cd ./meemoo_atramhasis/static && sass -I /usr/local/lib/python3.12/site-packages/atramhasis/static/scss -I /usr/local/lib/python3.12/site-packages/atramhasis/static/node_modules/foundation-sites/scss -I /usr/local/lib/python3.12/site-packages/atramhasis/static/node_modules/font-awesome/scss --embed-source-map --quiet scss/app.scss css/app.css
+
+# Atramhasis no longer bundles font-awesome/foundation-sites scss itself, so
+# fetch those separately; its own scss partials still ship under the
+# package's static/scss dir, so app.scss/settings.scss don't need to change.
+RUN npm install --no-save --prefix /tmp/scss-deps foundation-sites@5.5.3 font-awesome@4.7.0
+RUN cd ./meemoo_atramhasis/static && sass \
+      -I /usr/local/lib/python3.12/site-packages/atramhasis/static/scss \
+      -I /tmp/scss-deps/node_modules/foundation-sites/scss \
+      -I /tmp/scss-deps/node_modules/font-awesome/scss \
+      --embed-source-map --quiet scss/app.scss css/app.css
 
 RUN pip install -e .[dev]
 
